@@ -1,0 +1,106 @@
+name: "b2safe_accounting"
+
+filebeat.inputs:
+
+# user_login = access = auth stats (triggered by iRODS, when added PEP)
+- type: log
+  enabled: true
+  paths:
+    - "/usr/share/filebeat/irods_accounting_logs/user_login.log" # mounted in container
+    #- "/var/lib/irods/log/seadatacloud/user_login.log"          # real directory
+  fields_under_root: true
+  fields:
+    is_seadata: true
+    is_apel_accounting: true
+    is_from_eudat_seadata_filebeat: true
+    filter_code: "de.dkrz.seadata.filter_code.apel.20190313"
+    log_type: "user_login"
+    origin: "cineca"  # TODO adapt!
+
+
+# b2safe_op = b2safe_operation = b2safe_b2safe (triggered by replication etc.)
+- type: log
+  enabled: true
+  paths:
+    - "/usr/share/filebeat/irods_accounting_logs/b2safe_op.log" # mounted in container
+    #- "/var/lib/irods/log/seadatacloud/b2safe_op.log"          # real directory
+  fields_under_root: true
+  fields:
+    is_seadata: true
+    is_apel_accounting: true
+    is_from_eudat_seadata_filebeat: true
+    filter_code: "de.dkrz.seadata.filter_code.apel.20190313"
+    log_type: "b2safe_op"
+    origin: "cineca"  # TODO adapt!
+
+
+# user_op = operation (triggered by rules)
+- type: log
+  enabled: true
+  paths:
+    - "/usr/share/filebeat/irods_accounting_logs/user_op.log" # mounted in container
+    #- "/var/lib/irods/log/seadatacloud/user_op.log"          # real directory
+  fields_under_root: true
+  fields:
+    is_seadata: true
+    is_apel_accounting: true
+    is_from_eudat_seadata_filebeat: true
+    filter_code: "de.dkrz.seadata.filter_code.apel.20190313"
+    log_type: "user_op"
+    origin: "cineca"  # TODO adapt!
+
+
+# quota_stats = accounting_stats = irods_accounting (triggered by cron job)
+- type: log
+  enabled: true
+  paths:
+    - "/usr/share/filebeat/irods_accounting_logs/quota_stats.log" # mounted in container
+    #- "/var/lib/irods/log/seadatacloud/quota_stats.log"          # real directory
+  fields_under_root: true
+  fields:
+    is_seadata: true
+    is_apel_accounting: true
+    is_from_eudat_seadata_filebeat: true
+    filter_code: "de.dkrz.seadata.filter_code.apel.20190313"
+    log_type: "quota_stats"
+    origin: "cineca"  # TODO adapt!
+
+# system_stats = sys (triggered by cron job)
+- type: log
+  enabled: true
+  paths:
+    - "/usr/share/filebeat/irods_accounting_logs/system_stats.log" # mounted in container
+    #- "/var/lib/irods/log/seadatacloud/system_stats.log"          # real directory
+  fields_under_root: true
+  fields:
+    is_seadata: true
+    is_apel_accounting: true
+    is_from_eudat_seadata_filebeat: true
+    filter_code: "de.dkrz.seadata.filter_code.apel.20190313"
+    log_type: "system_stats"
+    origin: "cineca"  # TODO adapt!
+
+
+###
+### Output to Logstash
+###
+output.logstash:
+  hosts: ["my-logstash.de:5044"]
+
+
+###
+### Optional:
+### Logging of Filebeat itself
+###
+#https://www.elastic.co/guide/en/beats/filebeat/current/configuration-logging.html
+logging.level: info
+logging.json: true
+logging.to_files: true
+logging.metrics.enabled: false
+logging.to_syslog: false
+logging.to_eventlog: false
+logging.files:
+  path: /usr/share/filebeat/logs/
+  name: filebeatlog
+  keepfiles: 10
+
